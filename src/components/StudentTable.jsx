@@ -1,37 +1,19 @@
-import React, { useState } from "react";
-import { FaRegCopy } from "react-icons/fa";
+import React from "react";
 import "./StudentTable.css";
 
 const StudentTable = ({ students }) => {
-  const [copiedField, setCopiedField] = useState(null);
-
   if (!students || students.length === 0) {
     return <p>No student data available.</p>;
   }
 
-  const includedFields = [
-    "EXAMNAME",
-    "SEMESTER",
-    "APPNO",
-    "ROLLNO",
-    "ENRLNO",
-    "SNAME",
-    "STATUS",
-    "CASTE",
-    "SEX",
-  ];
-
-  const handleCopy = (text, fieldKey, rowIndex) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(`${fieldKey}-${rowIndex}`);
-    setTimeout(() => setCopiedField(null), 1000);
-  };
+  const includedFields = ["ROLLNO", "ENRLNO", "SNAME"];
 
   return (
     <div className="table-wrapper">
       <table className="student-table">
         <thead>
           <tr>
+            <th>S. No.</th>
             {includedFields.map((key) => (
               <th key={key}>{key}</th>
             ))}
@@ -40,21 +22,9 @@ const StudentTable = ({ students }) => {
         <tbody>
           {students.map((student, idx) => (
             <tr key={idx}>
+              <td>{idx + 1}</td>
               {includedFields.map((key) => (
-                <td key={key}>
-                  {student[key]}
-                  {(key === "ROLLNO" || key === "ENRLNO") && student[key] && (
-                    <FaRegCopy
-                      onClick={() => handleCopy(student[key], key, idx)}
-                      style={{
-                        cursor: "pointer",
-                        marginLeft: "6px",
-                        color: "#007bff",
-                      }}
-                      title={copiedField === `${key}-${idx}` ? "Copied!" : "Copy"}
-                    />
-                  )}
-                </td>
+                <td key={key}>{student[key]}</td>
               ))}
             </tr>
           ))}

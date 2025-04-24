@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import "./ExcelUploader.css";
 import StudentTable from "./StudentTable";
+import BULogo from "../assets/BU-Logo.png";
 
 const ExcelUploader = () => {
   const [excelData, setExcelData] = useState([]);
@@ -69,18 +70,23 @@ const ExcelUploader = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered Data");
 
-    XLSX.writeFile(workbook, "filtered_students.xlsx");
+    XLSX.writeFile(workbook, `Filtered - Students - ${selectedPaper}.xlsx`);
   };
 
   return (
     <div className="uploader-container">
-      <h2 className="uploader-title">📂 Upload & Filter Excel Data</h2>
+      <div className="heading-container">
+        <img src={BULogo} alt="BULogo" />
+        <h1>Barkatullah Vishwavidyalaya</h1>
+      </div>
+      <h2 className="uploader-title">Upload & Filter Excel Data</h2>
+
       <input className="file-input" type="file" accept=".xls, .xlsx" onChange={handleFileUpload} />
 
       {uniquePapers.length > 0 && (
         <>
           <label htmlFor="paper-select" className="paper-label">
-            🎯 Filter by Paper:
+            Filter by Paper:
           </label>
           <select
             id="paper-select"
@@ -97,11 +103,6 @@ const ExcelUploader = () => {
           </select>
         </>
       )}
-
-      {/* <h3 style={{ marginTop: "1.5rem", color: "black" }}>📄 Parsed Data:</h3>
-      <div className="data-preview">
-        <pre>{JSON.stringify(excelData[0], null, 2)}</pre>
-      </div> */}
 
       {selectedPaper && (
         <>
