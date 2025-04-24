@@ -24,7 +24,7 @@ const StudentTable = ({ students }) => {
   const handleCopy = (text, fieldKey, rowIndex) => {
     navigator.clipboard.writeText(text);
     setCopiedField(`${fieldKey}-${rowIndex}`);
-    setTimeout(() => setCopiedField(null), 1000); // Reset copied field
+    setTimeout(() => setCopiedField(null), 1000);
   };
 
   return (
