@@ -1,0 +1,96 @@
+/* ExcelUploader.css */
+.uploader-container {
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+.uploader-title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+}
+
+.file-input {
+  display: block;
+  margin: 0 auto 1.5rem;
+  padding: 10px;
+  border: 2px dashed #999;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.file-input:hover {
+  border-color: #007bff;
+}
+
+.data-preview {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Label styling */
+.paper-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Dropdown styling */
+.paper-select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.paper-select:hover {
+  border-color: #007bff;
+}
+
+.paper-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.download-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #0056b3;
+}
