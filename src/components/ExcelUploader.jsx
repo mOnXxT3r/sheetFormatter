@@ -12,33 +12,42 @@ const ExcelUploader = () => {
 
   const handleFileUpload = (e) => {
     setSelectedPaper("");
-    const file = e.target.files[0];
-    const reader = new FileReader();
+    const files = Array.from(e.target.files);
+    const allData = [];
+    const allPaperNames = new Set();
+    let filesProcessed = 0;
 
-    reader.onload = (evt) => {
-      const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+    files.forEach((file) => {
+      const reader = new FileReader();
 
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+      reader.onload = (evt) => {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
 
-      setExcelData(jsonData);
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-      const paperNamesSet = new Set();
-      jsonData.forEach((row) => {
-        if (row.paper_name) {
-          row.paper_name
-            .split("|")
-            .map((paper) => paper.trim())
-            .filter(Boolean)
-            .forEach((paper) => paperNamesSet.add(paper));
+        allData.push(...jsonData);
+
+        jsonData.forEach((row) => {
+          if (row.paper_name) {
+            row.paper_name
+              .split("|")
+              .map((paper) => paper.trim())
+              .filter(Boolean)
+              .forEach((paper) => allPaperNames.add(paper));
+          }
+        });
+
+        filesProcessed++;
+        if (filesProcessed === files.length) {
+          setExcelData(allData);
+          setUniquePapers([...allPaperNames]);
         }
-      });
+      };
 
-      setUniquePapers([...paperNamesSet]);
-    };
-
-    reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(file);
+    });
   };
 
   const handlePaperSelect = (e) => {
@@ -66,53 +75,78 @@ const ExcelUploader = () => {
   const downloadExcel = () => {
     if (!filteredStudents || filteredStudents.length === 0) return;
 
-    const worksheet = XLSX.utils.json_to_sheet(filteredStudents);
+    const exportData = filteredStudents.map((student, index) => ({
+      "S. No.": index + 1,
+      ROLLNO: student.ROLLNO?.replace(/[^a-zA-Z0-9]/g, "") || "",
+      ENRLNO: student.ENRLNO?.replace(/[^a-zA-Z0-9]/g, "") || "",
+      SNAME: student.SNAME || "",
+      "Extra Column for Remark": "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered Data");
 
-    XLSX.writeFile(workbook, `Filtered - Students - ${selectedPaper}.xlsx`);
+    XLSX.writeFile(workbook, `Filtered-Students-${selectedPaper}.xlsx`);
   };
 
   return (
     <div className="uploader-container">
-      <div className="heading-container">
-        <img src={BULogo} alt="BULogo" />
-        <h1>Barkatullah Vishwavidyalaya</h1>
+      <header className="heading-container">
+        <div className="logo-container">
+          <img src={BULogo} alt="BULogo" />
+        </div>
+        <h1>
+          Barkatullah <br /> Vishwavidyalaya
+        </h1>
+        <div className="header-right">
+          <h2 className="uploader-title">XLS File Formatter</h2>
+          <p>Upload, filter and format your Excel files</p>
+        </div>
+      </header>
+
+      <div className="mid-section">
+        <label className="file-upload-wrapper">
+          <h3>Upload XLS file</h3>
+          <input
+            className="file-input"
+            type="file"
+            accept=".xls, .xlsx"
+            multiple
+            onChange={handleFileUpload}
+          />
+        </label>
+
+        <div className="paper-select-wrapper">
+          {uniquePapers.length > 0 && (
+            <>
+              <label for="paper-select" class="paper-label">
+                Filter by Paper:
+              </label>
+              <select
+                id="paper-select"
+                className="paper-select"
+                value={selectedPaper}
+                onChange={handlePaperSelect}
+              >
+                <option value="">Filter by Paper:</option>
+                {uniquePapers.map((paper, index) => (
+                  <option key={index} value={paper}>
+                    {paper}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+        </div>
       </div>
-      <h2 className="uploader-title">Upload & Filter Excel Data</h2>
-
-      <input className="file-input" type="file" accept=".xls, .xlsx" onChange={handleFileUpload} />
-
-      {uniquePapers.length > 0 && (
-        <>
-          <label htmlFor="paper-select" className="paper-label">
-            Filter by Paper:
-          </label>
-          <select
-            id="paper-select"
-            className="paper-select"
-            value={selectedPaper}
-            onChange={handlePaperSelect}
-          >
-            <option value="">-- Select Paper --</option>
-            {uniquePapers.map((paper, index) => (
-              <option key={index} value={paper}>
-                {paper}
-              </option>
-            ))}
-          </select>
-        </>
-      )}
 
       {selectedPaper && (
         <>
-          <h3 style={{ marginTop: "1.5rem", color: "black" }}>
-            🎓 Students with Paper: {selectedPaper}
+          <h3 style={{ marginTop: "1.5rem", color: "black", textAlign: "left" }}>
+            Students with Paper: {selectedPaper} | {filteredStudents.length} students out of{" "}
+            {excelData.length} in Total
           </h3>
-          <h4 style={{ color: "black" }}>
-            Total no. of students: {excelData.length} | No. of students for this paper:{" "}
-            {filteredStudents.length}
-          </h4>
           <div>
             <StudentTable students={filteredStudents} />
           </div>
@@ -121,7 +155,7 @@ const ExcelUploader = () => {
 
       {selectedPaper !== "" && filteredStudents.length > 0 && (
         <button onClick={downloadExcel} className="download-btn">
-          ⬇ Download XLS
+          ⬇ Download Formatted File
         </button>
       )}
     </div>
