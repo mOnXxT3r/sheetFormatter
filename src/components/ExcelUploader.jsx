@@ -42,7 +42,13 @@ const ExcelUploader = () => {
         filesProcessed++;
         if (filesProcessed === files.length) {
           setExcelData(allData);
-          setUniquePapers([...allPaperNames]);
+          setUniquePapers(
+            [...allPaperNames].sort((a, b) => {
+              const codeA = parseInt(a.split(" - ")[0]);
+              const codeB = parseInt(b.split(" - ")[0]);
+              return codeA - codeB;
+            })
+          );
         }
       };
 
@@ -51,6 +57,7 @@ const ExcelUploader = () => {
   };
 
   const handlePaperSelect = (e) => {
+    console.log(uniquePapers);
     const selected = e.target.value;
     setSelectedPaper(selected);
 
@@ -59,16 +66,21 @@ const ExcelUploader = () => {
       return;
     }
 
-    const filtered = excelData.filter((student) => {
-      for (let i = 1; i <= 15; i++) {
-        const paperField = `paper_${i}`;
-        if (student[paperField] && student[paperField].trim() === selected) {
-          return true;
+    const filtered = excelData
+      .filter((student) => {
+        for (let i = 1; i <= 15; i++) {
+          const paperField = `paper_${i}`;
+          if (student[paperField] && student[paperField].trim() === selected) {
+            return true;
+          }
         }
-      }
-      return false;
-    });
-
+        return false;
+      })
+      .sort((a, b) => {
+        const rollA = parseInt(a.ROLLNO.replace(",", ""));
+        const rollB = parseInt(b.ROLLNO.replace(",", ""));
+        return rollA - rollB;
+      });
     setFilteredStudents(filtered);
   };
 
@@ -89,6 +101,8 @@ const ExcelUploader = () => {
 
     XLSX.writeFile(workbook, `Filtered-Students-${selectedPaper}.xlsx`);
   };
+
+  console.log(filteredStudents);
 
   return (
     <div className="uploader-container">
@@ -120,7 +134,7 @@ const ExcelUploader = () => {
         <div className="paper-select-wrapper">
           {uniquePapers.length > 0 && (
             <>
-              <label for="paper-select" class="paper-label">
+              <label htmlFor="paper-select" className="paper-label">
                 Filter by Paper:
               </label>
               <select

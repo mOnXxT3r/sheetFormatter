@@ -24,7 +24,11 @@ const StudentTable = ({ students }) => {
             <tr key={idx}>
               <td>{idx + 1}</td>
               {includedFields.map((key) => (
-                <td key={key}>{student[key]}</td>
+                <td key={key}>
+                  {typeof student[key] === "string"
+                    ? student[key].replace(/,+$/, "")
+                    : student[key]}
+                </td>
               ))}
             </tr>
           ))}
