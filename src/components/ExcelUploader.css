@@ -3,7 +3,7 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   padding: 2rem;
   padding-top: 0;
-  height: calc(100vh - 2rem);
+  margin-bottom: 6rem;
 }
 
 .uploader-title {
