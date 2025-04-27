@@ -1,0 +1,143 @@
+.heading-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+
+  & a {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #3f51b5;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #303f9f;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+    }
+  }
+}
+
+.logo-container {
+  width: 80px;
+  height: 80px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+
+  & > img {
+    width: 50px;
+  }
+}
+
+.heading-container {
+  & > h1 {
+    font-size: 2rem;
+    color: #3f51b5;
+    text-align: left;
+    margin: 1rem;
+    margin-left: 2rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+}
+
+.header-nav {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+.header-nav__list {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header-nav__link {
+  position: relative;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #3f51b5;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    background-color: #e8eaf6;
+    color: #303f9f;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+  }
+
+  &:active {
+    background-color: #d1d9ff;
+  }
+}
+
+.header-nav__link > span {
+  position: relative;
+  z-index: 1;
+}
+
+.header-nav__link--active {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+
+  & > h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #212121;
+    margin: 0;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  & > p {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #757575;
+    margin: 0;
+    text-align: right;
+    line-height: 1.4;
+  }
+}
+
+.uploader-title {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  color: #212121;
+  font-weight: 500;
+  line-height: 1.2;
+}

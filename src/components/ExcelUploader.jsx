@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import * as XLSX from "xlsx";
-import "./ExcelUploader.css";
+import "./ExcelUploader.scss";
 import StudentTable from "./StudentTable";
-import BULogo from "../assets/BU-Logo.png";
+import {
+  setExcelData,
+  setUniquePapers,
+  setSelectedPaper,
+  setFilteredStudents,
+  resetUploader,
+} from "../redux/excelUploaderSlice";
 
 const ExcelUploader = () => {
-  const [excelData, setExcelData] = useState([]);
-  const [uniquePapers, setUniquePapers] = useState([]);
-  const [selectedPaper, setSelectedPaper] = useState("");
-  const [filteredStudents, setFilteredStudents] = useState([]);
+  const dispatch = useDispatch();
+  const { excelData, uniquePapers, selectedPaper, filteredStudents } = useSelector(
+    (state) => state.excelUploader
+  );
 
   const handleFileUpload = (e) => {
-    setSelectedPaper("");
+    dispatch(resetUploader());
     const files = Array.from(e.target.files);
     const allData = [];
     const allPaperNames = new Set();
@@ -25,7 +32,7 @@ const ExcelUploader = () => {
         const workbook = XLSX.read(data, { type: "array" });
 
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "", raw: false });
 
         allData.push(...jsonData);
 
@@ -41,13 +48,15 @@ const ExcelUploader = () => {
 
         filesProcessed++;
         if (filesProcessed === files.length) {
-          setExcelData(allData);
-          setUniquePapers(
-            [...allPaperNames].sort((a, b) => {
-              const codeA = parseInt(a.split(" - ")[0]);
-              const codeB = parseInt(b.split(" - ")[0]);
-              return codeA - codeB;
-            })
+          dispatch(setExcelData(allData));
+          dispatch(
+            setUniquePapers(
+              [...allPaperNames].sort((a, b) => {
+                const codeA = parseInt(a.split(" - ")[0]);
+                const codeB = parseInt(b.split(" - ")[0]);
+                return codeA - codeB;
+              })
+            )
           );
         }
       };
@@ -57,12 +66,11 @@ const ExcelUploader = () => {
   };
 
   const handlePaperSelect = (e) => {
-    console.log(uniquePapers);
     const selected = e.target.value;
-    setSelectedPaper(selected);
+    dispatch(setSelectedPaper(selected));
 
     if (!selected) {
-      setFilteredStudents([]);
+      dispatch(setFilteredStudents([]));
       return;
     }
 
@@ -81,7 +89,8 @@ const ExcelUploader = () => {
         const rollB = parseInt(b.ROLLNO.replace(",", ""));
         return rollA - rollB;
       });
-    setFilteredStudents(filtered);
+
+    dispatch(setFilteredStudents(filtered));
   };
 
   const downloadExcel = () => {
@@ -102,26 +111,11 @@ const ExcelUploader = () => {
     XLSX.writeFile(workbook, `Filtered-Students-${selectedPaper}.xlsx`);
   };
 
-  console.log(filteredStudents);
-
   return (
     <div className="uploader-container">
-      <header className="heading-container">
-        <div className="logo-container">
-          <img src={BULogo} alt="BULogo" />
-        </div>
-        <h1>
-          Barkatullah <br /> Vishwavidyalaya
-        </h1>
-        <div className="header-right">
-          <h2 className="uploader-title">XLS File Formatter</h2>
-          <p>Upload, filter and format your Excel files</p>
-        </div>
-      </header>
-
       <div className="mid-section">
         <label className="file-upload-wrapper">
-          <h3>Upload XLS file</h3>
+          <h3>Select XLS file</h3>
           <input
             className="file-input"
             type="file"
@@ -157,10 +151,12 @@ const ExcelUploader = () => {
 
       {selectedPaper && (
         <>
-          <h3 style={{ marginTop: "1.5rem", color: "black", textAlign: "left" }}>
-            Students with Paper: {selectedPaper} | {filteredStudents.length} students out of{" "}
-            {excelData.length} in Total
-          </h3>
+          <div className="paper-details">
+            <h3 className="paper-details__title">Students Enrolled in Paper : {selectedPaper}</h3>
+            <p className="paper-details__summary">
+              {filteredStudents.length} out of {excelData.length} Total Students
+            </p>
+          </div>
           <div>
             <StudentTable students={filteredStudents} />
           </div>

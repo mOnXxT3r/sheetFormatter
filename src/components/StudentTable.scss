@@ -1,0 +1,67 @@
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  margin-top: 2rem;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Roboto", system-ui, -apple-system, sans-serif;
+  font-size: 0.9rem;
+  min-width: 1200px;
+  color: #212121;
+
+  & th,
+  & td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left; /* Left-align content */
+    white-space: nowrap;
+  }
+
+  & th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  & td {
+    font-weight: 400;
+    background-color: #ffffff;
+  }
+
+  & thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+  }
+
+  & tbody {
+    & tr {
+      &:nth-child(even) {
+        background-color: #fafafa;
+      }
+
+      &:hover {
+        background-color: #f1f1f1;
+        transition: background-color 0.3s ease;
+      }
+    }
+  }
+}
+
+.clickable-row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e0f7fa; /* subtle hover effect */
+    transition: background-color 0.3s ease;
+  }
+}

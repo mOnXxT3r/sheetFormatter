@@ -1,0 +1,38 @@
+.paper-count-container {
+  margin: 2rem;
+}
+
+.paper-count-title {
+  text-align: left;
+  margin-bottom: 1rem;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.paper-count-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+
+  th,
+  td {
+    padding: 12px 20px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+}
+
+.no-data-text {
+  text-align: center;
+  color: #888;
+}

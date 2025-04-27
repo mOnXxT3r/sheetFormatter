@@ -1,7 +1,14 @@
 import React from "react";
-import "./StudentTable.css";
+import "./StudentTable.scss";
+import { useNavigate } from "react-router-dom";
 
 const StudentTable = ({ students }) => {
+  const navigate = useNavigate();
+
+  const handleStudentClick = (student) => {
+    navigate(`/student/${student.ROLLNO.replace(/,+$/, "")}`, { state: { student } });
+  };
+
   if (!students || students.length === 0) {
     return <p>No student data available.</p>;
   }
@@ -21,7 +28,7 @@ const StudentTable = ({ students }) => {
         </thead>
         <tbody>
           {students.map((student, idx) => (
-            <tr key={idx}>
+            <tr key={idx} onClick={() => handleStudentClick(student)} className="clickable-row">
               <td>{idx + 1}</td>
               {includedFields.map((key) => (
                 <td key={key}>
