@@ -28,26 +28,29 @@ const PaperCount = () => {
 
   return (
     <div className="paper-count-container">
-      <h2 className="paper-count-title">Paper Wise Student Count</h2>
       {paperCounts.length > 0 ? (
-        <table className="paper-count-table">
-          <thead>
-            <tr>
-              <th>S. No.</th>
-              <th>Paper Name</th>
-              <th>Student Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paperCounts.map((paper, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{paper.paperName}</td>
-                <td>{paper.count}</td>
+        <>
+          <h2 className="paper-count-title">Paper Wise Student Count</h2>
+
+          <table className="paper-count-table">
+            <thead>
+              <tr>
+                <th>S. No.</th>
+                <th>Paper Name</th>
+                <th>Student Count</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {paperCounts.map((paper, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{paper.paperName}</td>
+                  <td>{paper.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       ) : (
         <p className="no-data-text">No data available. Please upload and select papers first.</p>
       )}

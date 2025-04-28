@@ -10,9 +10,7 @@ const Header = () => {
       <div className="logo-container">
         <img src={BULogo} alt="Barkatullah Vishwavidyalaya Logo" />
       </div>
-      <h1>
-        Barkatullah <br /> Vishwavidyalaya
-      </h1>
+      <h1>Barkatullah Vishwavidyalaya</h1>
 
       <nav className="header-nav">
         <ul className="header-nav__list">
@@ -36,13 +34,18 @@ const Header = () => {
               <span>Paper Wise Student Count</span>
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `header-nav__link ${isActive ? "header-nav__link--active" : ""}`
+              }
+            >
+              <span>About</span>
+            </NavLink>
+          </li>
         </ul>
       </nav>
-
-      <div className="header-right">
-        <h2 className="uploader-title">XLS File Formatter</h2>
-        <p>Upload, filter, and format your Excel files</p>
-      </div>
     </header>
   );
 };

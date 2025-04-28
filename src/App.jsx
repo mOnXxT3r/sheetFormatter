@@ -6,6 +6,7 @@ import PaperCount from "./components/PaperCount";
 import Header from "./components/Header";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import About from "./components/About";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/sheetFormatter" element={<ExcelUploader />} />
           <Route path="/student/:id" element={<StudentDetails />} />
           <Route path="/paperCount" element={<PaperCount />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<div className="p-4">404 - Page Not Found</div>} />
         </Routes>
       </BrowserRouter>

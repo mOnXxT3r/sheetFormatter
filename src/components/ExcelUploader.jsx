@@ -48,7 +48,15 @@ const ExcelUploader = () => {
 
         filesProcessed++;
         if (filesProcessed === files.length) {
-          dispatch(setExcelData(allData));
+          dispatch(
+            setExcelData(
+              allData.sort((a, b) => {
+                const rollA = parseInt(a.ROLLNO.replace(",", ""));
+                const rollB = parseInt(b.ROLLNO.replace(",", ""));
+                return rollA - rollB;
+              })
+            )
+          );
           dispatch(
             setUniquePapers(
               [...allPaperNames].sort((a, b) => {
@@ -149,7 +157,7 @@ const ExcelUploader = () => {
         </div>
       </div>
 
-      {selectedPaper && (
+      {selectedPaper && filteredStudents.length > 0 && (
         <>
           <div className="paper-details">
             <h3 className="paper-details__title">Students Enrolled in Paper : {selectedPaper}</h3>
@@ -159,6 +167,18 @@ const ExcelUploader = () => {
           </div>
           <div>
             <StudentTable students={filteredStudents} />
+          </div>
+        </>
+      )}
+
+      {excelData && excelData.length > 0 && filteredStudents.length === 0 && (
+        <>
+          <div className="paper-details">
+            <h3 className="paper-details__title">Students List</h3>
+            <p className="paper-details__summary">{excelData.length} Total Students</p>
+          </div>
+          <div>
+            <StudentTable students={excelData} />
           </div>
         </>
       )}

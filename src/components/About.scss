@@ -1,0 +1,70 @@
+.about-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+  font-family: "Roboto", system-ui, sans-serif;
+  color: #212121;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #3f51b5;
+    text-align: center;
+  }
+
+  .about-description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .contact-form-wrapper {
+    margin-top: 2rem;
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #3f51b5;
+      text-align: center;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      input,
+      textarea {
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      button {
+        padding: 0.75rem;
+        background-color: #3f51b5;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #303f9f;
+        }
+      }
+
+      .success-message {
+        color: #4caf50;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        text-align: center;
+      }
+    }
+  }
+}
