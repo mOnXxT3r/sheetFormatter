@@ -141,3 +141,38 @@
   font-weight: 500;
   line-height: 1.2;
 }
+
+/* Hide everything except logo and title */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .heading-container {
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .print-only-center {
+    margin: 0 auto;
+  }
+
+  .logo-container {
+    width: 80px;
+    height: 80px;
+
+    & > img {
+      width: 100%;
+    }
+  }
+
+  .heading-container > h1 {
+    font-size: 1.75rem;
+    margin: 0.5rem 0 0;
+    color: #000;
+  }
+}

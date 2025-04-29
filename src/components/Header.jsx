@@ -7,12 +7,12 @@ import { NavLink } from "react-router-dom";
 const Header = () => {
   return (
     <header className="heading-container">
-      <div className="logo-container">
+      <div className="logo-container print-only-center">
         <img src={BULogo} alt="Barkatullah Vishwavidyalaya Logo" />
       </div>
-      <h1>Barkatullah Vishwavidyalaya</h1>
+      <h1 className="print-only-center">Barkatullah Vishwavidyalaya</h1>
 
-      <nav className="header-nav">
+      <nav className="header-nav no-print">
         <ul className="header-nav__list">
           <li>
             <NavLink
