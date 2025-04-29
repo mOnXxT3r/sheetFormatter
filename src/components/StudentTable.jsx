@@ -20,7 +20,7 @@ const StudentTable = ({ students }) => {
       <table className="student-table">
         <thead>
           <tr>
-            <th>S. No.</th>
+            <th style={{ width: "10%" }}>S. No.</th>
             {includedFields.map((key) => (
               <th key={key}>{key}</th>
             ))}

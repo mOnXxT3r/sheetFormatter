@@ -10,15 +10,9 @@ const About = () => {
     e.preventDefault();
 
     emailjs
-      .sendForm(
-        "service_b2rmqwj", // Replace with your EmailJS Service ID
-        "template_e53hbop", // Replace with your EmailJS Template ID
-        formRef.current,
-        "JGwkb25zol28bthUw" // Replace with your EmailJS Public Key
-      )
+      .sendForm("service_b2rmqwj", "template_e53hbop", formRef.current, "JGwkb25zol28bthUw")
       .then(
         (result) => {
-          console.log(result.text);
           setMessageSent(true);
           formRef.current.reset();
         },

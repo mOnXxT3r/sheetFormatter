@@ -61,7 +61,7 @@ const StudentDetails = () => {
               <table className="papers-table">
                 <thead>
                   <tr>
-                    <th>S. No.</th>
+                    <th style={{ width: "10%" }}>S. No.</th>
                     <th>Paper Name</th>
                   </tr>
                 </thead>
