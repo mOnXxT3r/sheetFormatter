@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export const initialSelectedFields = ["ROLLNO", "ENRLNO", "SNAME", "FNAME"];
+
 const initialState = {
   excelData: [],
   uniquePapers: [],
   selectedPaper: "",
   filteredStudents: [],
-  selectedFields: ["ROLLNO", "ENRLNO", "SNAME"],
+  selectedFields: initialSelectedFields,
 };
 
 const excelUploaderSlice = createSlice({

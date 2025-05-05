@@ -10,6 +10,7 @@ import {
   setFilteredStudents,
   resetUploader,
   setSelectedFields,
+  initialSelectedFields,
 } from "../redux/excelUploaderSlice";
 
 const ExcelUploader = () => {
@@ -31,7 +32,7 @@ const ExcelUploader = () => {
 
   const handleFileUpload = (e) => {
     dispatch(resetUploader());
-    dispatch(setSelectedFields(["ROLLNO", "ENRLNO", "SNAME"]));
+    dispatch(setSelectedFields(initialSelectedFields));
 
     const files = Array.from(e.target.files);
     const allData = [];
