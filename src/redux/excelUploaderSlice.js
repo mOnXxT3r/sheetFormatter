@@ -5,6 +5,7 @@ const initialState = {
   uniquePapers: [],
   selectedPaper: "",
   filteredStudents: [],
+  selectedFields: ["ROLLNO", "ENRLNO", "SNAME"],
 };
 
 const excelUploaderSlice = createSlice({
@@ -23,6 +24,9 @@ const excelUploaderSlice = createSlice({
     setFilteredStudents: (state, action) => {
       state.filteredStudents = action.payload;
     },
+    setSelectedFields: (state, action) => {
+      state.selectedFields = action.payload;
+    },
     resetUploader: () => initialState,
   },
 });
@@ -32,6 +36,7 @@ export const {
   setUniquePapers,
   setSelectedPaper,
   setFilteredStudents,
+  setSelectedFields,
   resetUploader,
 } = excelUploaderSlice.actions;
 

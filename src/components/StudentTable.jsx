@@ -2,7 +2,7 @@ import React from "react";
 import "./StudentTable.scss";
 import { useNavigate } from "react-router-dom";
 
-const StudentTable = ({ students }) => {
+const StudentTable = ({ students, selectedFields }) => {
   const navigate = useNavigate();
 
   const handleStudentClick = (student) => {
@@ -13,15 +13,13 @@ const StudentTable = ({ students }) => {
     return <p>No student data available.</p>;
   }
 
-  const includedFields = ["ROLLNO", "ENRLNO", "SNAME"];
-
   return (
     <div className="table-wrapper">
       <table className="student-table">
         <thead>
           <tr>
             <th style={{ width: "10%" }}>S. No.</th>
-            {includedFields.map((key) => (
+            {selectedFields.map((key) => (
               <th key={key}>{key}</th>
             ))}
           </tr>
@@ -30,7 +28,7 @@ const StudentTable = ({ students }) => {
           {students.map((student, idx) => (
             <tr key={idx} onClick={() => handleStudentClick(student)} className="clickable-row">
               <td>{idx + 1}</td>
-              {includedFields.map((key) => (
+              {selectedFields.map((key) => (
                 <td key={key}>
                   {typeof student[key] === "string"
                     ? student[key].replace(/,+$/, "")

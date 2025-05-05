@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as XLSX from "xlsx";
 import "./ExcelUploader.scss";
@@ -9,16 +9,30 @@ import {
   setSelectedPaper,
   setFilteredStudents,
   resetUploader,
+  setSelectedFields,
 } from "../redux/excelUploaderSlice";
 
 const ExcelUploader = () => {
   const dispatch = useDispatch();
-  const { excelData, uniquePapers, selectedPaper, filteredStudents } = useSelector(
+  const { excelData, uniquePapers, selectedPaper, selectedFields, filteredStudents } = useSelector(
     (state) => state.excelUploader
   );
 
+  const [allFields, setAllFields] = useState([]);
+
+  useEffect(() => {
+    if (excelData.length > 0) {
+      const fields = Object.keys(excelData[0]).filter(
+        (key) => typeof excelData[0][key] === "string"
+      );
+      setAllFields(fields);
+    }
+  }, [excelData]);
+
   const handleFileUpload = (e) => {
     dispatch(resetUploader());
+    dispatch(setSelectedFields(["ROLLNO", "ENRLNO", "SNAME"]));
+
     const files = Array.from(e.target.files);
     const allData = [];
     const allPaperNames = new Set();
@@ -73,6 +87,13 @@ const ExcelUploader = () => {
     });
   };
 
+  const handleFieldToggle = (field) => {
+    const updatedFields = selectedFields.includes(field)
+      ? selectedFields.filter((f) => f !== field)
+      : [...selectedFields, field];
+    dispatch(setSelectedFields(updatedFields));
+  };
+
   const handlePaperSelect = (e) => {
     const selected = e.target.value;
     dispatch(setSelectedPaper(selected));
@@ -104,13 +125,19 @@ const ExcelUploader = () => {
   const downloadExcel = () => {
     if (!filteredStudents || filteredStudents.length === 0) return;
 
-    const exportData = filteredStudents.map((student, index) => ({
-      "S. No.": index + 1,
-      ROLLNO: student.ROLLNO?.replace(/[^a-zA-Z0-9]/g, "") || "",
-      ENRLNO: student.ENRLNO?.replace(/[^a-zA-Z0-9]/g, "") || "",
-      SNAME: student.SNAME || "",
-      "Extra Column for Remark": "",
-    }));
+    const exportData = filteredStudents.map((student, index) => {
+      const row = {
+        "S. No.": index + 1,
+      };
+      selectedFields.forEach((field) => {
+        row[field] =
+          typeof student[field] === "string"
+            ? student[field].replace(/[^a-zA-Z0-9]/g, "")
+            : student[field];
+      });
+      row["Extra Column for Remark"] = "";
+      return row;
+    });
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
@@ -157,31 +184,45 @@ const ExcelUploader = () => {
         </div>
       </div>
 
-      {selectedPaper && filteredStudents.length > 0 && (
+      {allFields.length > 0 && (
+        <div className="field-selection">
+          <h4>Select Fields to Display:</h4>
+          <div className="checkbox-inline">
+            {allFields.map((field) => (
+              <label key={field} className="checkbox-label-inline">
+                <input
+                  type="checkbox"
+                  checked={selectedFields.includes(field)}
+                  onChange={() => handleFieldToggle(field)}
+                />
+                {field}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(selectedPaper && filteredStudents.length > 0) ||
+      (excelData && filteredStudents.length === 0) ? (
         <>
           <div className="paper-details">
-            <h3 className="paper-details__title">Students Enrolled in Paper : {selectedPaper}</h3>
+            <h3 className="paper-details__title">
+              {selectedPaper ? `Students Enrolled in Paper : ${selectedPaper}` : "Students List"}
+            </h3>
             <p className="paper-details__summary">
-              {filteredStudents.length} out of {excelData.length} Total Students
+              {selectedPaper
+                ? `${filteredStudents.length} out of ${excelData.length} Total Students`
+                : `${excelData.length} Total Students`}
             </p>
           </div>
           <div>
-            <StudentTable students={filteredStudents} />
+            <StudentTable
+              students={selectedPaper ? filteredStudents : excelData}
+              selectedFields={selectedFields}
+            />
           </div>
         </>
-      )}
-
-      {excelData && excelData.length > 0 && filteredStudents.length === 0 && (
-        <>
-          <div className="paper-details">
-            <h3 className="paper-details__title">Students List</h3>
-            <p className="paper-details__summary">{excelData.length} Total Students</p>
-          </div>
-          <div>
-            <StudentTable students={excelData} />
-          </div>
-        </>
-      )}
+      ) : null}
 
       {selectedPaper !== "" && filteredStudents.length > 0 && (
         <button onClick={downloadExcel} className="download-btn">

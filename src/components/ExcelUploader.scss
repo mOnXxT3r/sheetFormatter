@@ -117,6 +117,43 @@
   }
 }
 
+.field-selection {
+  margin-top: 1rem;
+  width: 100%;
+
+  & > h4 {
+    text-align: left;
+  }
+}
+
+.checkbox-inline {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.checkbox-label-inline {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #eaeaea;
+  }
+}
+
 .download-btn {
   position: fixed;
   bottom: 2rem;
