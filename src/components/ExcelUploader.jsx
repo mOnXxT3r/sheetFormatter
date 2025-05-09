@@ -133,7 +133,7 @@ const ExcelUploader = () => {
       selectedFields.forEach((field) => {
         row[field] =
           typeof student[field] === "string"
-            ? student[field].replace(/[^a-zA-Z0-9]/g, "")
+            ? student[field].replace(/[^a-zA-Z0-9 ]/g, "")
             : student[field];
       });
       row["Extra Column for Remark"] = "";
