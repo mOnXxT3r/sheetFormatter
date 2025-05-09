@@ -141,6 +141,18 @@ const ExcelUploader = () => {
     });
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // 🔥 Auto-size columns based on content
+    const columnWidths = Object.keys(exportData[0]).map((key) => {
+      const maxLength = exportData.reduce((max, row) => {
+        const value = row[key] ? String(row[key]) : "";
+        return Math.max(max, value.length);
+      }, key.length);
+      return { wch: maxLength + 2 };
+    });
+
+    worksheet["!cols"] = columnWidths;
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered Data");
 
