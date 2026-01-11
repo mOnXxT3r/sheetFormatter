@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as XLSX from "xlsx";
 import "./ExcelUploader.scss";
@@ -19,15 +19,13 @@ const ExcelUploader = () => {
     (state) => state.excelUploader
   );
 
-  const [allFields, setAllFields] = useState([]);
-
-  useEffect(() => {
+  const allFields = useMemo(() => {
     if (excelData.length > 0) {
-      const fields = Object.keys(excelData[0]).filter(
+      return Object.keys(excelData[0]).filter(
         (key) => typeof excelData[0][key] === "string"
       );
-      setAllFields(fields);
     }
+    return [];
   }, [excelData]);
 
   const handleFileUpload = (e) => {
@@ -39,48 +37,79 @@ const ExcelUploader = () => {
     const allPaperNames = new Set();
     let filesProcessed = 0;
 
+    const dispatchData = () => {
+      if (allData.length === 0) return;
+      
+      dispatch(
+        setExcelData(
+          allData.sort((a, b) => {
+            const rollA = parseInt(a.ROLLNO?.replace(/,/g, "") || "0", 10) || 0;
+            const rollB = parseInt(b.ROLLNO?.replace(/,/g, "") || "0", 10) || 0;
+            return rollA - rollB;
+          })
+        )
+      );
+      dispatch(
+        setUniquePapers(
+          [...allPaperNames].sort((a, b) => {
+            const codeA = parseInt(a.split(" - ")[0] || "0", 10) || 0;
+            const codeB = parseInt(b.split(" - ")[0] || "0", 10) || 0;
+            return codeA - codeB;
+          })
+        )
+      );
+    };
+
     files.forEach((file) => {
       const reader = new FileReader();
 
       reader.onload = (evt) => {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
 
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "", raw: false });
-
-        allData.push(...jsonData);
-
-        jsonData.forEach((row) => {
-          if (row.paper_name) {
-            row.paper_name
-              .split("|")
-              .map((paper) => paper.trim())
-              .filter(Boolean)
-              .forEach((paper) => allPaperNames.add(paper));
+          if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+            console.error("No sheets found in file:", file.name);
+            filesProcessed++;
+            if (filesProcessed === files.length && allData.length > 0) {
+              dispatchData();
+            }
+            return;
           }
-        });
 
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "", raw: false });
+
+          allData.push(...jsonData);
+
+          jsonData.forEach((row) => {
+            if (row.paper_name) {
+              row.paper_name
+                .split("|")
+                .map((paper) => paper.trim())
+                .filter(Boolean)
+                .forEach((paper) => allPaperNames.add(paper));
+            }
+          });
+
+          filesProcessed++;
+          if (filesProcessed === files.length) {
+            dispatchData();
+          }
+        } catch (error) {
+          console.error("Error processing file:", file.name, error);
+          filesProcessed++;
+          if (filesProcessed === files.length && allData.length > 0) {
+            dispatchData();
+          }
+        }
+      };
+
+      reader.onerror = () => {
+        console.error("Error reading file:", file.name);
         filesProcessed++;
-        if (filesProcessed === files.length) {
-          dispatch(
-            setExcelData(
-              allData.sort((a, b) => {
-                const rollA = parseInt(a.ROLLNO.replace(",", ""));
-                const rollB = parseInt(b.ROLLNO.replace(",", ""));
-                return rollA - rollB;
-              })
-            )
-          );
-          dispatch(
-            setUniquePapers(
-              [...allPaperNames].sort((a, b) => {
-                const codeA = parseInt(a.split(" - ")[0]);
-                const codeB = parseInt(b.split(" - ")[0]);
-                return codeA - codeB;
-              })
-            )
-          );
+        if (filesProcessed === files.length && allData.length > 0) {
+          dispatchData();
         }
       };
 
@@ -104,7 +133,7 @@ const ExcelUploader = () => {
       return;
     }
 
-    const filtered = excelData
+      const filtered = excelData
       .filter((student) => {
         for (let i = 1; i <= 15; i++) {
           const paperField = `paper_${i}`;
@@ -115,8 +144,8 @@ const ExcelUploader = () => {
         return false;
       })
       .sort((a, b) => {
-        const rollA = parseInt(a.ROLLNO.replace(",", ""));
-        const rollB = parseInt(b.ROLLNO.replace(",", ""));
+        const rollA = parseInt(a.ROLLNO?.replace(/,/g, "") || "0", 10) || 0;
+        const rollB = parseInt(b.ROLLNO?.replace(/,/g, "") || "0", 10) || 0;
         return rollA - rollB;
       });
 
@@ -143,13 +172,15 @@ const ExcelUploader = () => {
     const worksheet = XLSX.utils.json_to_sheet(exportData);
 
     // 🔥 Auto-size columns based on content
-    const columnWidths = Object.keys(exportData[0]).map((key) => {
-      const maxLength = exportData.reduce((max, row) => {
-        const value = row[key] ? String(row[key]) : "";
-        return Math.max(max, value.length);
-      }, key.length);
-      return { wch: maxLength + 2 };
-    });
+    const columnWidths = exportData.length > 0 
+      ? Object.keys(exportData[0]).map((key) => {
+          const maxLength = exportData.reduce((max, row) => {
+            const value = row[key] ? String(row[key]) : "";
+            return Math.max(max, value.length);
+          }, key.length);
+          return { wch: maxLength + 2 };
+        })
+      : [];
 
     worksheet["!cols"] = columnWidths;
 
@@ -186,8 +217,8 @@ const ExcelUploader = () => {
                 onChange={handlePaperSelect}
               >
                 <option value="">Filter by Paper:</option>
-                {uniquePapers.map((paper, index) => (
-                  <option key={index} value={paper}>
+                {uniquePapers.map((paper) => (
+                  <option key={paper} value={paper}>
                     {paper}
                   </option>
                 ))}
@@ -237,7 +268,7 @@ const ExcelUploader = () => {
         </>
       ) : null}
 
-      {selectedPaper !== "" && filteredStudents.length > 0 && (
+      {selectedPaper && filteredStudents.length > 0 && (
         <button onClick={downloadExcel} className="download-btn">
           ⬇ Download Formatted File
         </button>

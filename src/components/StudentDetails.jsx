@@ -29,11 +29,11 @@ const StudentDetails = () => {
         <div className="student-details-card">
           <div className="student-details-body">
             <div className="student-info-row">
-              <span className="label">Enrollment No.: {student.ENRLNO.replace(/,+$/, "")}</span>
+              <span className="label">Enrollment No.: {student.ENRLNO?.replace(/,+$/, "") || student.ENRLNO || "N/A"}</span>
             </div>
 
             <div className="student-info-row">
-              <span className="label">Roll No.: {student.ROLLNO.replace(/,+$/, "")}</span>
+              <span className="label">Roll No.: {student.ROLLNO?.replace(/,+$/, "") || student.ROLLNO || "N/A"}</span>
             </div>
 
             <div className="student-info-row">
@@ -67,7 +67,7 @@ const StudentDetails = () => {
                 </thead>
                 <tbody>
                   {papers.map((paper, index) => (
-                    <tr key={index}>
+                    <tr key={`${paper.id}-${paper.paperName}`}>
                       <td>{index + 1}</td>
                       <td>{paper.paperName}</td>
                     </tr>

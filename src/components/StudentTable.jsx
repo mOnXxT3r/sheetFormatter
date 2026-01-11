@@ -26,13 +26,17 @@ const StudentTable = ({ students, selectedFields }) => {
         </thead>
         <tbody>
           {students.map((student, idx) => (
-            <tr key={idx} onClick={() => handleStudentClick(student)} className="clickable-row">
+            <tr 
+              key={student.ROLLNO ? `${student.ROLLNO}-${idx}` : idx} 
+              onClick={() => handleStudentClick(student)} 
+              className="clickable-row"
+            >
               <td>{idx + 1}</td>
               {selectedFields.map((key) => (
-                <td key={key}>
+                <td key={`${student.ROLLNO || idx}-${key}`}>
                   {typeof student[key] === "string"
                     ? student[key].replace(/,+$/, "")
-                    : student[key]}
+                    : student[key] ?? ""}
                 </td>
               ))}
             </tr>

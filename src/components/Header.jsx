@@ -1,6 +1,5 @@
 import React from "react";
 import BULogo from "../assets/BU-Logo.png";
-import { Link } from "react-router-dom";
 import "./Header.scss";
 import { NavLink } from "react-router-dom";
 

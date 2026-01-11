@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import "./PaperCount.scss";
 
 const PaperCount = () => {
   const { excelData, uniquePapers } = useSelector((state) => state.excelUploader);
-  const [paperCounts, setPaperCounts] = useState([]);
+  
+  const paperCounts = useMemo(() => {
+    if (!excelData.length || !uniquePapers.length) return [];
 
-  useEffect(() => {
-    if (!excelData.length || !uniquePapers.length) return;
-
-    const counts = uniquePapers.map((paperName) => {
+    return uniquePapers.map((paperName) => {
       let count = 0;
       excelData.forEach((student) => {
         for (let i = 1; i <= 15; i++) {
@@ -22,8 +21,6 @@ const PaperCount = () => {
       });
       return { paperName, count };
     });
-
-    setPaperCounts(counts);
   }, [excelData, uniquePapers]);
 
   return (
@@ -42,7 +39,7 @@ const PaperCount = () => {
             </thead>
             <tbody>
               {paperCounts.map((paper, index) => (
-                <tr key={index}>
+                <tr key={paper.paperName}>
                   <td>{index + 1}</td>
                   <td>{paper.paperName}</td>
                   <td>{paper.count}</td>
