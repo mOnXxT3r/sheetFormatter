@@ -27,7 +27,7 @@ const PaperCount = () => {
     <div className="paper-count-container">
       {paperCounts.length > 0 ? (
         <>
-          <h2 className="paper-count-title">Paper Wise Student Count</h2>
+          <h2 className="paper-count-title">Paper Wise Student Count - (Total Students: {excelData.length})</h2>
 
           <table className="paper-count-table">
             <thead>
